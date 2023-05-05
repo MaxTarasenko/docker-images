@@ -38,6 +38,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: docker-images/builder/Dockerfile
+          file: builder/Dockerfile
           push: true
           tags: mrmerseri/builder:1
