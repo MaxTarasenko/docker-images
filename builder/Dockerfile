@@ -10,7 +10,7 @@ RUN set -ex \
     && apt-get install software-properties-common -y -qq --no-install-recommends \
     && apt-get update \
     && apt-get install -y -qq --no-install-recommends \
-        curl jq unzip wget apt-utils tar \
+        curl jq unzip wget apt-utils tar git vim \
     && rm -rf /var/lib/apt/lists/*
 
 # Add new repo
