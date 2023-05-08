@@ -64,7 +64,7 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
     chmod ug+s /usr/bin/docker && \
     rm ./get-docker.sh
 
-# Install JAVA 11 Corretto
+# Install JAVA Corretto
 ENV JAVA_HOME="/usr/lib/jvm/java-11-amazon-corretto" \
     JDK_HOME="/usr/lib/jvm/java-11-amazon-corretto" \
     JRE_HOME="/usr/lib/jvm/java-11-amazon-corretto"
@@ -75,7 +75,7 @@ RUN wget -O- https://apt.corretto.aws/corretto.key | apt-key add - \
 
 # Install MVN
 ARG MAVEN_HOME="/opt/maven"
-ARG MAVEN_VERSION=3.9.1
+ARG MAVEN_VERSION=3.8.4
 
 ARG MAVEN_CONFIG_HOME="/root/.m2"
 
