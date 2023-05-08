@@ -64,47 +64,14 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
     chmod ug+s /usr/bin/docker && \
     rm ./get-docker.sh
 
-#****************      JAVA     ****************************************************
-ENV JAVA_11_HOME="/usr/lib/jvm/java-11-amazon-corretto"
-ENV JDK_11_HOME="/usr/lib/jvm/java-11-amazon-corretto"
-ENV JRE_11_HOME="/usr/lib/jvm/java-11-amazon-corretto"
-ARG MAVEN_HOME="/opt/maven"
-ARG MAVEN_VERSION=3.6.3
-ARG MAVEN_DOWNLOAD_SHA512="c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0"
+# Install JAVA 11 Corretto
+RUN wget -O- https://apt.corretto.aws/corretto.key | apt-key add - \
+    && add-apt-repository 'deb https://apt.corretto.aws stable main' \
+    && apt-get update && apt-get install -y -qq java-11-amazon-corretto-jdk
 
-ARG MAVEN_CONFIG_HOME="/root/.m2"
-
-ENV JAVA_HOME="$JAVA_11_HOME" \
-    JDK_HOME="$JDK_11_HOME" \
-    JRE_HOME="$JRE_11_HOME"
-
-ENV PATH="${PATH}:/opt/tools"
-
-RUN set -ex \
-    # Install Corretto 11
-    # Note: We will use update-alternatives to make sure JDK11 has higher priority for all the tools
-    && apt-get install -y -qq java-11-amazon-corretto-jdk \
-    && for tool_path in $JAVA_HOME/bin/*; do \
-          tool=`basename $tool_path`; \
-          update-alternatives --install /usr/bin/$tool $tool $tool_path 10000; \
-          update-alternatives --set $tool $tool_path; \
-        done \
-     && rm $JAVA_HOME/lib/security/cacerts && ln -s /etc/ssl/certs/java/cacerts $JAVA_HOME/lib/security/cacerts \
-
-RUN set -ex \
-    # Install Maven
-    && mkdir -p $MAVEN_HOME \
-    && curl -LSso /var/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
-    && echo "$MAVEN_DOWNLOAD_SHA512 /var/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz" | sha512sum -c - \
-    && tar xzf /var/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz -C $MAVEN_HOME --strip-components=1 \
-    && rm /var/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz \
-    && update-alternatives --install /usr/bin/mvn mvn /opt/maven/bin/mvn 10000 \
-    && mkdir -p $MAVEN_CONFIG_HOME
-
-# Cleanup
-RUN rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && apt-get clean
-#****************     END JAVA     ****************************************************
+# Install MVN
+RUN apt-get install -y -qq maven
 
 # Remove unused files and other
-RUN rm -rf /var/lib/apt/lists/*
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && apt-get clean
