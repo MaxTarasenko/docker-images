@@ -65,12 +65,28 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
     rm ./get-docker.sh
 
 # Install JAVA 11 Corretto
+ENV JAVA_HOME="/usr/lib/jvm/java-11-amazon-corretto" \
+    JDK_HOME="/usr/lib/jvm/java-11-amazon-corretto" \
+    JRE_HOME="/usr/lib/jvm/java-11-amazon-corretto"
+
 RUN wget -O- https://apt.corretto.aws/corretto.key | apt-key add - \
     && add-apt-repository 'deb https://apt.corretto.aws stable main' \
     && apt-get update && apt-get install -y -qq java-11-amazon-corretto-jdk
 
 # Install MVN
-RUN apt-get install -y -qq maven
+ARG MAVEN_HOME="/opt/maven"
+ARG MAVEN_VERSION=3.9.1
+
+ARG MAVEN_CONFIG_HOME="/root/.m2"
+
+RUN set -ex \
+    # Install Maven
+    && mkdir -p $MAVEN_HOME \
+    && curl -LSso /var/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    && tar xzf /var/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz -C $MAVEN_HOME --strip-components=1 \
+    && rm /var/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    && update-alternatives --install /usr/bin/mvn mvn /opt/maven/bin/mvn 10000 \
+    && mkdir -p $MAVEN_CONFIG_HOME
 
 # Remove unused files and other
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
