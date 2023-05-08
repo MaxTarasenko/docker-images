@@ -65,53 +65,31 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
     rm ./get-docker.sh
 
 #****************      JAVA     ****************************************************
-ENV JAVA_17_HOME="/usr/lib/jvm/java-17-amazon-corretto" \
-    JDK_17_HOME="/usr/lib/jvm/java-17-amazon-corretto" \
-    JRE_17_HOME="/usr/lib/jvm/java-17-amazon-corretto"
-ARG ANT_VERSION=1.10.13
+ENV JAVA_11_HOME="/usr/lib/jvm/java-11-amazon-corretto"
+ENV JDK_11_HOME="/usr/lib/jvm/java-11-amazon-corretto"
+ENV JRE_11_HOME="/usr/lib/jvm/java-11-amazon-corretto"
 ARG MAVEN_HOME="/opt/maven"
-ARG MAVEN_VERSION=3.9.1
-ARG GRADLE_VERSION=8.0.2
-ARG SBT_VERSION=1.8.2
-ARG GRADLE_PATH="$SRC_DIR/gradle"
-ARG ANT_DOWNLOAD_SHA512="de4ac604629e39a86a306f0541adb3775596909ad92feb8b7de759b1b286417db24f557228737c8b902d6abf722d2ce5bb0c3baa3640cbeec3481e15ab1958c9"
-ARG MAVEN_DOWNLOAD_SHA512="d3be5956712d1c2cf7a6e4c3a2db1841aa971c6097c7a67f59493a5873ccf8c8b889cf988e4e9801390a2b1ae5a0669de07673acb090a083232dbd3faf82f3e3"
-ARG GRADLE_DOWNLOADS_SHA256="47a5bfed9ef814f90f8debcbbb315e8e7c654109acd224595ea39fca95c5d4da 8.0.2"
-ARG SBT_DOWNLOAD_SHA256="1f65344da074dbd66dfefa93c0eff8d319d772e5cad47fcbeb6ae178bbdf4686"
+ARG MAVEN_VERSION=3.6.3
+ARG MAVEN_DOWNLOAD_SHA512="c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0"
 
 ARG MAVEN_CONFIG_HOME="/root/.m2"
 
-ENV JAVA_HOME="$JAVA_17_HOME" \
-    JDK_HOME="$JDK_17_HOME" \
-    JRE_HOME="$JRE_17_HOME"
+ENV JAVA_HOME="$JAVA_11_HOME" \
+    JDK_HOME="$JDK_11_HOME" \
+    JRE_HOME="$JRE_11_HOME"
 
 ENV PATH="${PATH}:/opt/tools"
 
 RUN set -ex \
-    && apt-get update \
-    && apt-get install -y -qq software-properties-common apt-utils \
-    # Install Corretto 17
-    && wget -qO- https://apt.corretto.aws/corretto.key | apt-key add - \
-    && add-apt-repository 'deb https://apt.corretto.aws stable main' \
-    && apt-get update \
-    && apt-get install -y -qq java-17-amazon-corretto-jdk \
-    && apt-get install -y -qq --no-install-recommends ca-certificates-java \
-    # Ensure Java cacerts symlink points to valid location
-    && update-ca-certificates -f \
-    && dpkg --add-architecture i386 \
-    && apt-get update \
+    # Install Corretto 11
+    # Note: We will use update-alternatives to make sure JDK11 has higher priority for all the tools
+    && apt-get install -y -qq java-11-amazon-corretto-jdk \
     && for tool_path in $JAVA_HOME/bin/*; do \
           tool=`basename $tool_path`; \
           update-alternatives --install /usr/bin/$tool $tool $tool_path 10000; \
           update-alternatives --set $tool $tool_path; \
         done \
      && rm $JAVA_HOME/lib/security/cacerts && ln -s /etc/ssl/certs/java/cacerts $JAVA_HOME/lib/security/cacerts \
-    # Install Ant
-    && curl -LSso /var/tmp/apache-ant-$ANT_VERSION-bin.tar.gz https://archive.apache.org/dist/ant/binaries/apache-ant-$ANT_VERSION-bin.tar.gz  \
-    && echo "$ANT_DOWNLOAD_SHA512 /var/tmp/apache-ant-$ANT_VERSION-bin.tar.gz" | sha512sum -c - \
-    && tar -xzf /var/tmp/apache-ant-$ANT_VERSION-bin.tar.gz -C /opt \
-    && rm /var/tmp/apache-ant-$ANT_VERSION-bin.tar.gz \
-    && update-alternatives --install /usr/bin/ant ant /opt/apache-ant-$ANT_VERSION/bin/ant 10000
 
 RUN set -ex \
     # Install Maven
