@@ -36,6 +36,11 @@ RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscli
     && rm -rf /opt/aws \
     && aws --version
 
+# Install pip
+RUN curl -s https://bootstrap.pypa.io/get-pip.py | python3
+# Install python packages
+RUN pip install python-gitlab
+
 # Install kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
     && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
@@ -64,14 +69,8 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
     chmod ug+s /usr/bin/docker && \
     rm ./get-docker.sh
 
-# Install JAVA Corretto
-ENV JAVA_HOME="/usr/lib/jvm/java-11-amazon-corretto" \
-    JDK_HOME="/usr/lib/jvm/java-11-amazon-corretto" \
-    JRE_HOME="/usr/lib/jvm/java-11-amazon-corretto"
-
-RUN wget -O- https://apt.corretto.aws/corretto.key | apt-key add - \
-    && add-apt-repository 'deb https://apt.corretto.aws stable main' \
-    && apt-get update && apt-get install -y -qq java-11-amazon-corretto-jdk
+# Install JAVA 11
+RUN apt install -y openjdk-11-jre-headless
 
 # Install MVN
 ARG MAVEN_HOME="/opt/maven"
