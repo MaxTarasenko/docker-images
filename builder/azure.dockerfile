@@ -30,6 +30,7 @@ FROM core AS tools
 # Install Azure
 # https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+RUN az aks install-cli
 
 # Install kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
