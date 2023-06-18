@@ -49,7 +49,7 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
 # Install Helm
 RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     && chmod 700 get_helm.sh \
-    && ./get_helm.sh \
+    && ./get_helm.sh
 RUN helm plugin install https://github.com/databus23/helm-diff
 
 # Install Helmfile
