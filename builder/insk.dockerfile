@@ -49,10 +49,12 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
 # Install Helm
 RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     && chmod 700 get_helm.sh \
-    && ./get_helm.sh
+    && ./get_helm.sh \
+RUN helm plugin install https://github.com/databus23/helm-diff
 
 # Install Helmfile
-RUN helm plugin install https://github.com/databus23/helm-diff
+ARG HELMFILE_VERSION=0.154.0
+RUN wget -q -qO- https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_amd64.tar.gz | tar xvz -C /usr/local/bin helmfile
 
 # Install Node 16
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
