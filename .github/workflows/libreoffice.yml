@@ -1,4 +1,4 @@
-name: Docker Builder libreoffice
+name: Docker Image - mrmerseri/libreoffice-daemon
 
 on:
   workflow_dispatch:
