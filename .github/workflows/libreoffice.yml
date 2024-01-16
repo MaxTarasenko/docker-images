@@ -1,4 +1,4 @@
-name: Docker Builder tag aws-jdk17
+name: Docker Builder libreoffice
 
 on:
   push:
