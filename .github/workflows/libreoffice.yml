@@ -1,6 +1,7 @@
 name: Docker Builder libreoffice
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'libreoffice-daemon/libreoffice.dockerfile'
