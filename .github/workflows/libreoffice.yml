@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'libreoffice-daemon/libreoffice.dockerfile'
+      - 'libreoffice-daemon/start-libreoffice-daemon.sh'
 
 env:
   # Use docker.io for Docker Hub if empty
