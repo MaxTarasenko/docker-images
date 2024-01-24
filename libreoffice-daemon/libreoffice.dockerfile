@@ -2,7 +2,7 @@
 FROM alpine:latest
 
 # Install the necessary dependencies for LibreOffice and Java
-RUN apk add --no-cache gdb openjdk11-jre libreoffice libreoffice-base
+RUN apk add --no-cache openjdk11-jre libreoffice libreoffice-base
 
 # Install any additional fonts (optional)
 RUN apk add --no-cache msttcorefonts-installer fontconfig \
