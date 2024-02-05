@@ -3,7 +3,7 @@ env:
   DOCKER_REP: deploy-tools
   DOCKER_TAG: helm
 
-name: Docker ${{ env.DOCKER_REP }} tag ${{ env.DOCKER_TAG }}
+name: Docker Deploy
 
 on:
   push:
