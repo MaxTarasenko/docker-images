@@ -37,7 +37,7 @@ jobs:
             TAG=$(basename $DOCKERFILE .dockerfile)
             FOLDER=$(basename $(dirname $DOCKERFILE))
             echo "::set-output name=dockerfile::$DOCKERFILE"
-            echo "::set-output name=tag::$FOLDER-$TAG"
+            echo "::set-output name=tag::$FOLDER:$TAG"
           else
             echo "No relevant changes detected"
             exit 78
