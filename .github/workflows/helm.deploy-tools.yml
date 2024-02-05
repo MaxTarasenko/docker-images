@@ -1,14 +1,12 @@
-env:
-  DOCKER_HUB: mrmerseri
-  DOCKER_REP: deploy-tools
-  DOCKER_TAG: helm
-
 name: Docker Deploy
 
 on:
   push:
-    paths:
-      - ${{ env.DOCKER_REP }}/${{ env.DOCKER_TAG }}.dockerfile
+    branches:
+      - main
+
+env:
+  DOCKER_HUB: mrmerseri
 
 jobs:
   build:
@@ -18,19 +16,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Identify changed files
+        id: files
+        uses: lots0logs/gh-action-get-changed-files@2.2.2
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ${{ env.DOCKER_REP }}/${{ env.DOCKER_TAG }}.dockerfile
-          push: true
-          tags: ${{ env.DOCKER_HUB }}/${{ env.DOCKER_REP }}:${{ env.DOCKER_TAG }}
+      - name: Determine Dockerfile and Tag
+        id: dockerfile
+        run: |
+          echo "${{ steps.files.outputs }}"
+
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          file: ${{ steps.files.outputs.added_modified }}
+#          push: true
+#          tags: ${{ env.DOCKER_HUB }}/${{ env.DOCKER_REP }}:${{ env.DOCKER_TAG }}
