@@ -58,4 +58,4 @@ jobs:
           context: .
           file: ${{ steps.dockerfile.outputs.dockerfile }}
           push: true
-          tags: mrmerseri/${{ steps.dockerfile.outputs.tag }}
+          tags: ${{ env.DOCKER_HUB }}/${{ steps.dockerfile.outputs.tag }}
