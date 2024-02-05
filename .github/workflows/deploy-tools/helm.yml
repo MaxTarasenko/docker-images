@@ -1,0 +1,36 @@
+env:
+  DOCKER_HUB: mrmerseri
+  DOCKER_REP: deploy-tools
+  DOCKER_TAG: helm
+
+name: Docker ${{ env.DOCKER_REP }} tag ${{ env.DOCKER_TAG }}
+
+on:
+  push:
+    paths:
+      - ${{ env.DOCKER_REP }}/${{ env.DOCKER_TAG }}.dockerfile
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ env.DOCKER_REP }}/${{ env.DOCKER_TAG }}.dockerfile
+          push: true
+          tags: ${{ env.DOCKER_HUB }}/${{ env.DOCKER_REP }}:${{ env.DOCKER_TAG }}
