@@ -24,7 +24,7 @@ jobs:
             echo "::set-output name=tag::helm"
           else
             echo "No relevant changes detected"
-            exit 0 # Successfully exit without an error
+            exit 78 # optional: skip the rest of the job if no relevant changes are detected
           fi
 
       - name: Set up Docker Buildx
