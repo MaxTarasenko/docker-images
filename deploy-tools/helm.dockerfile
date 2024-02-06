@@ -19,7 +19,7 @@ RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | b
 FROM base as runner
 
 # Dependency installation
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl jq
 
 # Copy tools from a temporary image
 COPY --from=builder /tmp/kubectl /usr/local/bin/kubectl
