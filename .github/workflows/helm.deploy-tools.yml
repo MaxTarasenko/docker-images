@@ -31,13 +31,15 @@ jobs:
             TAG=$(basename $DOCKERFILE .dockerfile)
             FOLDER=$(basename $(dirname $DOCKERFILE))
             echo "::set-output name=dockerfile::$DOCKERFILE"
-            echo "::set-output name=tag::${FOLDER}-${TAG}"
+            echo "::set-output name=folder::${FOLDER}"
+            echo "::set-output name=tag::${TAG}"
           elif echo "${{ steps.files.outputs.modified }}" | grep -q 'deploy-tools/'; then
             DOCKERFILE=$(echo "${{ steps.files.outputs.modified }}" | grep 'deploy-tools/' | head -n 1)
             TAG=$(basename $DOCKERFILE .dockerfile)
             FOLDER=$(basename $(dirname $DOCKERFILE))
             echo "::set-output name=dockerfile::$DOCKERFILE"
-            echo "::set-output name=tag::${FOLDER}-${TAG}"
+            echo "::set-output name=folder::${FOLDER}"
+            echo "::set-output name=tag::${TAG}"
           else
             echo "No relevant changes detected"
             exit 78
@@ -58,4 +60,4 @@ jobs:
           context: .
           file: ${{ steps.dockerfile.outputs.dockerfile }}
           push: true
-          tags: ${{ env.DOCKER_HUB }}/${{ steps.dockerfile.outputs.tag }}
+          tags: ${{ env.DOCKER_HUB }}/${{ steps.dockerfile.outputs.folder }}:${{ steps.dockerfile.outputs.tag }}
