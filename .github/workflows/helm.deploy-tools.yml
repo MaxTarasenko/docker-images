@@ -1,4 +1,4 @@
-name: Docker Image - mrmerseri/deploy-tools:helm
+name: mrmerseri/deploy-tools:helm
 
 on:
   workflow_dispatch:
