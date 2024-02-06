@@ -1,49 +1,19 @@
-name: Docker Deploy
+name: Docker Image - mrmerseri/deploy-tools:helm
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
-
-env:
-  DOCKER_HUB: mrmerseri
+    paths:
+      - 'deploy-tools/helm.dockerfile'
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-
-      - name: Identify changed files
-        id: files
-        uses: lots0logs/gh-action-get-changed-files@2.2.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Determine Dockerfile and Tag
-        id: dockerfile
-        run: |
-          if echo "${{ steps.files.outputs.modified }}" | grep -q 'builder/'; then
-            DOCKERFILE=$(echo "${{ steps.files.outputs.modified }}" | grep 'builder/' | head -n 1)
-            TAG=$(basename $DOCKERFILE .dockerfile)
-            FOLDER=$(basename $(dirname $DOCKERFILE))
-            echo "::set-output name=dockerfile::$DOCKERFILE"
-            echo "::set-output name=folder::${FOLDER}"
-            echo "::set-output name=tag::${TAG}"
-          elif echo "${{ steps.files.outputs.modified }}" | grep -q 'deploy-tools/'; then
-            DOCKERFILE=$(echo "${{ steps.files.outputs.modified }}" | grep 'deploy-tools/' | head -n 1)
-            TAG=$(basename $DOCKERFILE .dockerfile)
-            FOLDER=$(basename $(dirname $DOCKERFILE))
-            echo "::set-output name=dockerfile::$DOCKERFILE"
-            echo "::set-output name=folder::${FOLDER}"
-            echo "::set-output name=tag::${TAG}"
-          else
-            echo "No relevant changes detected"
-            exit 78
-          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -55,9 +25,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ${{ steps.dockerfile.outputs.dockerfile }}
+          context: libreoffice-daemon
+          file: libreoffice-daemon/libreoffice.dockerfile
           push: true
-          tags: ${{ env.DOCKER_HUB }}/${{ steps.dockerfile.outputs.folder }}:${{ steps.dockerfile.outputs.tag }}
+          tags: mrmerseri/deploy-tools:helm
