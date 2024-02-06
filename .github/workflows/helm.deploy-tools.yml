@@ -42,7 +42,7 @@ jobs:
             echo "::set-output name=tag::${TAG}"
           else
             echo "No relevant changes detected"
-            exit 0
+            exit 78
           fi
 
       - name: Set up Docker Buildx

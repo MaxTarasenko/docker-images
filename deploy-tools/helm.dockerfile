@@ -21,4 +21,3 @@ FROM base as runner
 # Copy tools from a temporary image
 COPY --from=builder /tmp/kubectl /usr/local/bin/kubectl
 COPY --from=builder /tmp/helm /usr/local/bin/helm
-
