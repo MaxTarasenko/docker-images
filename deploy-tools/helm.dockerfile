@@ -18,6 +18,9 @@ RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | b
 # Step 2: Creating the final image
 FROM base as runner
 
+# Dependency installation
+RUN apk add --no-cache curl
+
 # Copy tools from a temporary image
 COPY --from=builder /tmp/kubectl /usr/local/bin/kubectl
 COPY --from=builder /tmp/helm /usr/local/bin/helm
