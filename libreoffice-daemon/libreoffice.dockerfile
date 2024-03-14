@@ -11,6 +11,12 @@ RUN apk add --no-cache msttcorefonts-installer fontconfig \
     update-ms-fonts && \
     fc-cache -f && rm -rf /var/cache/apk/*
 
+# Copying fonts into a container
+COPY fonts/* /usr/share/fonts/
+
+# Update font cache
+RUN fc-cache -f -v
+
 # Copy the script to run LibreOffice as a daemon (e.g. software to listen for commands on a port)
 COPY start-libreoffice-daemon.sh /usr/local/bin/libreoffice-daemon
 

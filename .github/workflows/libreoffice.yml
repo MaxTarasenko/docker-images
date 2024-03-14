@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'libreoffice-daemon/libreoffice.dockerfile'
-      - 'libreoffice-daemon/start-libreoffice-daemon.sh'
+      - 'libreoffice-daemon/'
 
 env:
   # Use docker.io for Docker Hub if empty
